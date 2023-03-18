@@ -1,0 +1,38 @@
+import { Box, Color, render } from 'ink'
+import React, { Fragment, useEffect, useState } from 'react'
+
+import { Listr } from 'Listr2'
+
+type Ctx = {}
+
+const logger = new Logger({ useIcons: false })
+
+async function main(): Promise<void> {
+  let task: Listr<Ctx, 'default'>
+
+  task = new Listr<Ctx, 'default'>(
+    [
+      {
+        title: 'This task will show INK as output.',
+        task: async (ctx, task): Promise<any> => {
+          
+          const { unmount, waitUntilExit } = render(<App />, task.stdout())
+
+          setTimeout(unmount, 2000)
+
+          return waitUntilExit()
+        }
+      }
+    ],
+    { concurrent: false }
+  )
+
+  try {
+    const context = await task.run()
+    console.log(`Context: ${JSON.stringify(context)}`)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+main()

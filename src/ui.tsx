@@ -5,7 +5,8 @@ import Header from './components/Header';
 // import Spinner from 'ink-spinner';
 
 import SelectInput from 'ink-select-input';
-import Receiver from './components/Receiver/index';
+import Receiver from './components/Receiver';
+import Sender from './components/Sender';
 
 const App: FC<{ name?: string }> = ({ }) => {
 	const [userType, setUserType] = useState(null);
@@ -43,6 +44,10 @@ const App: FC<{ name?: string }> = ({ }) => {
 			
 			{userType === 'Receiver' && (
 				<Receiver />
+			)}
+			
+			{userType === 'Sender' && (
+				<Sender />
 			)}
 		</>
 	)

@@ -7,15 +7,20 @@ import { Server } from '@fabyosk/peerly-sdk/lib';
 
 const Receiver: React.FC = () => {
   const [files, setFiles] = useState<FileType[]>([]);
+  const [userConnected, setUserConnected] = useState<any>(null);
 
   useEffect(() => {
     const server = new Server()
-    server.start().then(() => {
-      // server.on('ready', () => setIsConnected(true))
-    })
+      .setUserName('FSK')
+
+    server.start()
+
+    server.on('user-connected', (payload) => {
+      setUserConnected(payload)
+    });
 
     server.on('file-upload', (payload: FileType) => {
-      setFiles([...files, payload])
+      setFiles((currentFiles) => [...currentFiles, payload])
     })
 
     server.on('update-progress', (payload: FileType) => {
@@ -33,8 +38,12 @@ const Receiver: React.FC = () => {
   }, [])
 
   return (
-    <Box>
-      <Text>Waiting for files...</Text>
+    <Box flexDirection="column">
+      {userConnected ? (
+        <Text>{userConnected.username} has connected</Text>
+      ) : (
+        <Text>Waiting for files...</Text>
+      )}
       <Box flexDirection="column">
         {files.map(file => (
           <FileRow key={file.id} file={file} />
